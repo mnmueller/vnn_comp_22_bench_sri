@@ -8,11 +8,19 @@ from pgd_attack import pgd_attack
 import resnetseq as models
 
 
-def write_vnn_spec(dataset, index, eps, dir_path="./", prefix="spec", data_lb=0, data_ub=1, n_class=10):
+def write_vnn_spec(dataset, index, eps, dir_path="./", prefix="spec", data_lb=0, data_ub=1, n_class=10, mean=None, std=None):
     x, y = dataset[index]
-    x = np.array(x).reshape(-1)
     x_lb = np.clip(x - eps, data_lb, data_ub)
     x_ub = np.clip(x + eps, data_lb, data_ub)
+
+    if mean is not None and std is not None:
+        mean = mean.detach().cpu().numpy()
+        std = std.detach().cpu().numpy()
+        x_lb = ((x_lb - mean) / std)
+        x_ub = ((x_ub - mean) / std)
+
+    x_lb = np.array(x_lb).reshape(-1)
+    x_ub = np.array(x_ub).reshape(-1)
 
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
@@ -164,7 +172,8 @@ def main():
 
             if args.network is None or all(y == y_pred):
                 print(f"Eps for sample {idx} set to {eps}")
-                spec_i = write_vnn_spec(dataset, idx, eps, dir_path=spec_path, prefix=args.dataset + "_spec", data_lb=0, data_ub=1, n_class=10)
+                print(f"Model prediction {pred}")
+                spec_i = write_vnn_spec(dataset, idx, eps, dir_path=spec_path, prefix=args.dataset + "_spec", data_lb=0, data_ub=1, n_class=10, mean=mean, std=std)
                 f.write(f"{''if args.network is None else os.path.join('nets',os.path.basename(onnx_path))}, {os.path.join('specs',args.dataset,spec_i)}, {args.time_out:.1f}\n")
             else:
                 print(f"Sample {idx} skipped as it was misclassified")
