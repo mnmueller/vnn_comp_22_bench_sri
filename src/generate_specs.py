@@ -118,6 +118,10 @@ def main():
         model.load_state_dict(state_dict)
         model.eval()
         model = model.to(device)
+        onnx_path = args.network[:-4] + ".onnx"
+        if not os.path.exists(onnx_path):
+            torch.onnx.export(model,  torch.tensor(dataset[0][0].unsqueeze(0), device=device, dtype=torch.float32),
+                  onnx_path, verbose=True, input_names=["input"], output_names=["output"])
 
     idxs = get_sample_idx(args.n, block=args.block, seed=args.seed, n_max=len(dataset), start_idx=args.start_idx)
     spec_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../specs", args.dataset)
