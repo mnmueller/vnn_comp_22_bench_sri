@@ -165,7 +165,7 @@ def main():
             if args.network is None or all(y == y_pred):
                 print(f"Eps for sample {idx} set to {eps}")
                 spec_i = write_vnn_spec(dataset, idx, eps, dir_path=spec_path, prefix=args.dataset + "_spec", data_lb=0, data_ub=1, n_class=10)
-                f.write(f"{''if args.network is None else os.path.join('nets',os.path.basename(args.network))}, {os.path.join('specs',args.dataset,spec_i)}, {args.time_out:.1f}\n")
+                f.write(f"{''if args.network is None else os.path.join('nets',os.path.basename(onnx_path))}, {os.path.join('specs',args.dataset,spec_i)}, {args.time_out:.1f}\n")
             else:
                 print(f"Sample {idx} skipped as it was misclassified")
                 if len(idxs) < len(dataset): # only sample idxs while there are still new samples to be found
