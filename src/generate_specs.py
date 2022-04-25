@@ -144,14 +144,19 @@ def main():
                 pred = model(x)
                 y_pred = torch.argmax(pred, axis=-1)
                 if all(y == y_pred) and args.search_eps is not None:
-                    eps_found = False
-                    eps = args.max_epsilon
-                    while not eps_found:
+                    eps = args.max_epsilon / args.search_eps
+                    eps_last = 0
+                    while abs(eps-eps_last)/args.max_epsilon > 1e-3:
                         adv_found = pgd_attack("CIFAR" if dataset is "cifar10" else "MNIST", model, x, eps, data_min=-mean/std, data_max=(1-mean)/std, y=y, initialization="uniform")
+                        eps_tmp = eps
                         if adv_found:
-                            eps = args.search_eps * eps
+                            eps = eps - abs(eps-eps_last)/2
                         else:
-                            eps_found = True
+                            if eps == args.max_epsilon / args.search_eps:
+                                break
+                            eps = eps + abs(eps-eps_last)/2
+                        eps_last = eps_tmp
+                    eps = args.search_eps * eps
                 else:
                     eps = args.max_epsilon
             else:
