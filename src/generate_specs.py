@@ -132,7 +132,7 @@ def main(args):
                   onnx_path, verbose=True, input_names=["input"], output_names=["output"])
 
     idxs = get_sample_idx(args.n, block=args.block, seed=args.seed, n_max=len(dataset), start_idx=args.start_idx)
-    spec_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../specs")
+    spec_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../specs", args.dataset)
 
     instances_dir = os.path.dirname(args.instances)
     if not os.path.isdir(instances_dir):

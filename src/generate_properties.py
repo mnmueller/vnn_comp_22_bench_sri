@@ -13,7 +13,7 @@ class args_object():
         self.seed = seed
         self.start_idx = None
         self.network = None
-        self.instances = "./specs/instances.csv"
+        self.instances = "../specs/instances.csv"
         self.new_instances = False
         self.time_out = 300.0
         self.search_eps = None
