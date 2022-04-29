@@ -77,11 +77,9 @@ def get_mnist():
     return datasets.MNIST(data_path, train=False, download=True, transform=transforms.ToTensor())
 
 
-def main():
-    parser = argparse.ArgumentParser(description='VNN spec generator',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--dataset', type=str, required=True, choices=["mnist", "cifar10"],
-                        help='The dataset to generate specs for')
+def parse_args():
+    parser = argparse.ArgumentParser(description='VNN specs', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--dataset', type=str, required=True, choices=["mnist", "cifar10"], help='The dataset to generate specs for')
     parser.add_argument('--max_epsilon', type=float, required=True, help='The epsilon for L_infinity perturbation')
     parser.add_argument('--n', type=int, default=25, help='The number of specs to generate')
     parser.add_argument('--block', action="store_true", default=False, help='Generate specs in a block')
@@ -94,7 +92,9 @@ def main():
     parser.add_argument('--search_eps', type=float, default=None, help='Ratio for eps search')
 
     args = parser.parse_args()
+    return args
 
+def main(args):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     if args.start_idx is not None:
@@ -132,7 +132,7 @@ def main():
                   onnx_path, verbose=True, input_names=["input"], output_names=["output"])
 
     idxs = get_sample_idx(args.n, block=args.block, seed=args.seed, n_max=len(dataset), start_idx=args.start_idx)
-    spec_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../specs", args.dataset)
+    spec_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../specs")
 
     instances_dir = os.path.dirname(args.instances)
     if not os.path.isdir(instances_dir):
@@ -190,4 +190,5 @@ def main():
         print(f"{len(idxs)-args.n} samples were misclassified and replacement samples drawn.")
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    main(args)
