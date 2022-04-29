@@ -31,11 +31,11 @@ def main():
 
     args = args_object(int(seed))
 
-    args.set({"max_epsilon": 0.03, "n": 36, "network": "../nets/resnet_3b2_bn_mixup_adv_4.0_bs128_lr-1.pth",
+    args.set({"max_epsilon": 0.03, "n": 2, "network": "../nets/resnet_3b2_bn_mixup_adv_4.0_bs128_lr-1.pth",
               "search_eps": 0.7, "new_instance": True})
     generate_spec(args)
 
-    args.set({"max_epsilon": 0.03, "n": 36, "network": "../nets/resnet_3b2_bn_mixup_adv_4.0_bs128_lr-1.pth",
+    args.set({"max_epsilon": 0.03, "n": 2, "network": "../nets/resnet_3b2_bn_mixup_adv_4.0_bs128_lr-1.pth",
               "search_eps": 0.7, "new_instance": False})
     generate_spec(args)
 
