@@ -96,6 +96,7 @@ def parse_args():
 
 def main(args):
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Using device: {device}")
 
     if args.start_idx is not None:
         args.block = True
@@ -122,7 +123,7 @@ def main(args):
         bn = "bn" in name_split
 
         model = models.Models[model_name](in_ch=3, in_dim=32, bn=bn)
-        state_dict = torch.load(args.network)['state_dict']
+        state_dict = torch.load(args.network, map_location=device)['state_dict']
         model.load_state_dict(state_dict)
         model.eval()
         model = model.to(device)
