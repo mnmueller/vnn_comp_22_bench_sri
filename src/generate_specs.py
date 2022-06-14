@@ -133,7 +133,8 @@ def main(args):
                   onnx_path, verbose=True, input_names=["input"], output_names=["output"])
 
     idxs = get_sample_idx(args.n, block=args.block, seed=args.seed, n_max=len(dataset), start_idx=args.start_idx)
-    spec_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../specs", args.dataset)
+    spec_path_rel = os.path.join("specs", args.dataset)
+    spec_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", spec_path_rel)
 
     instances_dir = os.path.dirname(args.instances)
     if not os.path.isdir(instances_dir):
@@ -175,7 +176,9 @@ def main(args):
                 print(f"Eps for sample {idx} set to {eps}")
                 print(f"Model prediction {pred}")
                 spec_i = write_vnn_spec(dataset, idx, eps, dir_path=spec_path, prefix=args.dataset + "_spec", data_lb=0, data_ub=1, n_class=10, mean=mean, std=std)
-                f.write(f"{''if args.network is None else os.path.join('nets',os.path.basename(onnx_path))}, {os.path.join(spec_path, spec_i)}, {args.time_out:.1f}\n")
+                f.write(f"{''if args.network is None else os.path.join('nets',os.path.basename(onnx_path))}, {os.path.join(spec_path_rel, spec_i)}, {args.time_out:.1f}\n")
+                print(f"Instance added:")
+                print(f"{''if args.network is None else os.path.join('nets',os.path.basename(onnx_path))}, {os.path.join(spec_path_rel, spec_i)}, {args.time_out:.1f}")
             else:
                 print(f"Sample {idx} skipped as it was misclassified")
                 if len(idxs) < len(dataset): # only sample idxs while there are still new samples to be found
