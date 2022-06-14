@@ -32,7 +32,7 @@ def main():
     args = args_object(int(seed))
 
     args.set({"max_epsilon": 0.0035, "n": 72, "network": "../nets/resnet_3b2_bn_mixup_ssadv_4.0_bs128_lr-1_v2.pth",
-              "search_eps": 0.7, "new_instance": True})
+              "search_eps": 0.7, "new_instances": True})
     generate_spec(args)
 
     print(f"Seed {seed} passed")
